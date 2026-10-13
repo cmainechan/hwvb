@@ -1,0 +1,858 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hebrew Weak Verbs: All Types</title>
+<style>
+:root{
+  --bg:#faf9f6;--card:#ffffff;--fg:#1f1e1b;--muted:#6b6a65;--line:#d6d3cb;--line-strong:#a9a69d;
+  --accent:#2f5fb3;--accent-bg:#e6eefb;--ok:#2e7d32;--ok-bg:#e7f4e8;--bad:#b3261e;--bad-bg:#fbe9e7;
+  --warn:#9a5b00;--warn-bg:#fff3de;--radius:10px;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#1b1a18;--card:#262522;--fg:#ecebe6;--muted:#a4a29a;--line:#3d3b36;--line-strong:#6a6760;
+    --accent:#8ab4f8;--accent-bg:#23334f;--ok:#81c784;--ok-bg:#1f3322;--bad:#f2867d;--bad-bg:#3a2321;
+    --warn:#f0b866;--warn-bg:#3a2e17;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+main{max-width:780px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:22px;font-weight:600;margin:0 0 4px}
+h2{font-size:16px;font-weight:600;margin:0 0 6px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 20px}
+.he{font-family:"SBL Hebrew","Ezra SIL","Noto Sans Hebrew","Noto Serif Hebrew","Frank Ruhl Libre","Times New Roman","Arial Unicode MS","DejaVu Sans",serif;direction:rtl;unicode-bidi:isolate}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+button,select{font:inherit;color:var(--fg)}
+button{cursor:pointer}
+select{background:var(--card);border:1px solid var(--line-strong);border-radius:var(--radius);padding:6px 10px;max-width:100%}
+.btn{background:var(--card);border:1px solid var(--line-strong);border-radius:var(--radius);padding:7px 14px;font-size:14px}
+.btn:hover:not(:disabled){border-color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:default}
+.seg{padding:6px 16px;border-radius:var(--radius);border:1px solid var(--line-strong);background:transparent;font-size:14px}
+.seg.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:16px}
+.card p{margin:0}
+.small{font-size:13px;color:var(--muted)}
+
+/* letter row */
+.letters{display:flex;flex-direction:row;direction:rtl;gap:10px;justify-content:center;align-items:flex-end;flex-wrap:wrap;min-height:128px;margin:6px 0 10px}
+.piece{display:flex;flex-direction:column;align-items:center;gap:4px;direction:ltr}
+.tile{position:relative;min-width:72px;min-height:84px;display:inline-flex;align-items:center;justify-content:center;border:1.5px solid var(--line-strong);border-radius:var(--radius);background:var(--card);padding:4px 10px;transition:transform .7s ease,opacity .7s ease,border-color .3s,background .3s}
+.tile .he{font-size:40px;line-height:1.3}
+.tile.pat{background:var(--accent-bg);border-color:var(--accent)}
+.tile.pat .he{font-size:32px}
+.tile.weak{border-color:var(--warn);background:var(--warn-bg)}
+.tile.s-assimilate{border-style:dashed;border-color:var(--warn);opacity:.35;transform:translateX(-84px)}
+.tile.s-contract{border-style:dashed;border-color:var(--warn);opacity:.35;transform:translateX(84px)}
+.tile.s-drop{border-style:dashed;border-color:var(--bad);opacity:.25;transform:translateY(-14px)}
+.tile.s-drop .he{text-decoration:line-through}
+.tile.s-vowel{border-style:dashed;border-color:var(--accent);opacity:.75}
+.tile.s-quiesce{border-style:dotted;border-color:var(--muted);opacity:.5}
+.tile.s-guttural{border-color:var(--warn);background:var(--warn-bg)}
+.tile.target{border-color:var(--ok);background:var(--ok-bg)}
+.tile.bad{border-color:var(--bad);background:var(--bad-bg)}
+.tile.ok{border-color:var(--ok);background:var(--ok-bg)}
+.cap{font-size:12px;color:var(--muted);min-height:1.2em;text-align:center;max-width:110px}
+button.tile{cursor:pointer;font:inherit;color:inherit}
+button.tile:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.step-title{font-size:18px;font-weight:600;margin:0 0 4px}
+.step-desc{font-size:15px;min-height:3.2em}
+.dots{display:flex;gap:6px;justify-content:center;margin:10px 0}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dot.on{background:var(--accent)}
+.bigword{font-size:44px;text-align:center;line-height:1.4;margin:4px 0}
+.skeleton{font-size:28px;text-align:center}
+.ok-t{color:var(--ok)}.bad-t{color:var(--bad)}
+.full{font-size:26px}
+.hide{display:none}
+
+/* comparison with the strong verb */
+.crow{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:6px 0}
+.clbl{width:96px;font-size:13px;color:var(--muted)}
+.cword{font-size:30px;min-width:120px;text-align:right}
+.cpieces{display:flex;flex-direction:row;direction:rtl;gap:6px;align-items:center}
+.cbox{border:1px solid var(--line-strong);border-radius:8px;padding:2px 10px;font-size:22px;min-width:40px;text-align:center;direction:rtl}
+.cbox.empty{opacity:.4;font-size:16px}
+.cbox.diff{border-color:var(--warn);background:var(--warn-bg)}
+.clines{font-size:14px;margin-top:8px}
+.clines div{margin:2px 0}
+</style>
+</head>
+<body>
+<main>
+<h1>Weak Verbs: What Happens to the Stem</h1>
+<p class="sub">Watch what a weak letter does, then practise spotting it. Qal only. This page is separate from the strong-verb builder.</p>
+
+<div class="row between" style="margin-top:16px">
+  <div class="row">
+    <label for="type" class="small">Type</label><select id="type"></select>
+    <label for="verb" class="small">Verb</label><select id="verb"></select>
+  </div>
+  <div class="small" id="score">Practice score 0 / 0</div>
+</div>
+
+<section class="card">
+  <h2 id="type-name"></h2>
+  <div class="small" id="type-sum" style="font-size:14px"></div>
+</section>
+
+<div class="row" style="margin-top:16px">
+  <button class="seg on" id="t-watch" type="button">Watch</button>
+  <button class="seg" id="t-prac" type="button">Practise</button>
+</div>
+
+<!-- WATCH -->
+<section class="card" id="watch">
+  <div class="row">
+    <label for="form" class="small">Form</label><select id="form"></select>
+  </div>
+  <div style="font-size:20px;font-weight:600;margin:10px 0 4px" id="w-head"></div>
+  <div class="letters" id="w-letters"></div>
+  <div class="dots" id="w-dots"></div>
+  <div class="step-title" id="w-title"></div>
+  <div class="step-desc" id="w-desc"></div>
+  <div class="bigword he hide" id="w-word" lang="he"></div>
+  <div class="hide" id="w-cmp"></div>
+  <div class="row" style="margin-top:10px;justify-content:center">
+    <button class="btn" id="w-back" type="button">Back</button>
+    <button class="btn" id="w-next" type="button">Next step</button>
+    <button class="btn" id="w-replay" type="button">Replay</button>
+  </div>
+</section>
+
+<!-- PRACTISE -->
+<section class="card hide" id="prac">
+  <div class="row">
+    <label for="pform" class="small">Form</label><select id="pform"></select>
+  </div>
+  <div style="font-size:20px;font-weight:600;margin:10px 0 4px" id="p-prompt"></div>
+  <div class="small" id="p-sub" style="margin-bottom:8px"></div>
+  <div class="small" id="p-how"></div>
+  <div class="letters" id="p-letters"></div>
+  <div class="small" style="text-align:center">Root letters still written in the stem</div>
+  <div class="skeleton he" id="p-skel" lang="he"></div>
+  <div class="row" style="margin-top:14px">
+    <button class="btn" id="p-check" type="button">Check</button>
+    <button class="btn" id="p-show" type="button">Show answer</button>
+    <button class="btn" id="p-next" type="button">Next form</button>
+    <button class="btn" id="p-shuf" type="button">Shuffle</button>
+  </div>
+  <div id="p-fb" style="min-height:3.6em;font-size:14px;margin-top:12px" aria-live="polite"></div>
+</section>
+</main>
+
+<script>
+/*
+ HOW TO ADD A VERB OR A TYPE
+ ---------------------------
+ TYPES[id]  = { grp, short, name, summary, states, reasons, verbs }
+   grp      heading used in the Type dropdown
+   states   which STATE names the learner can choose between in Practise
+   reasons  { code: [why, result] }  the explanation shown for a form that uses that code
+ verbs[id]  = { name, root:[{ch,name} x3], weak:[index,...], rows:[...] }
+   weak     which root letters are the weak ones (0 = first, 1 = second, 2 = third)
+ Each row is  [key, reasonCode, prefix, stem, ending, states, note?]
+   key      one of KEYS below (perf3ms, perf3fs, perf1cs, imp3ms, imp3mp, way3ms, impvms, infc)
+   prefix   pointed prefix text (may include the wayyiqtol וַ), or ''
+   stem     pointed stem (the root letters as they appear in this form), or ''
+   ending   pointed ending, or ''
+   states   one letter per root letter:
+              k keep   a assimilate   d drop   v vowel   q quiesce   c contract   g guttural
+   note     optional extra note
+ The full word is prefix + stem + ending, so keep the three pieces exactly as they join.
+ Every row is compared with the strong verb (STRONG) automatically.
+ To add another kind of change, add an entry to CODE and STATES (and a CSS class .tile.s-<name>).
+*/
+
+const D = 'ּ';   /* dagesh */
+const PH = '◌';  /* dotted circle placeholder, shown before an ending that is only a vowel mark */
+const strip = s => (s || '').replace(/[֑-ׇ]/g, '');
+const startsWithMark = s => !!s && /[֑-ׇ]/.test(s[0]);
+const disp = s => !s ? '—' : (startsWithMark(s) ? PH + s : s);
+
+const CODE = { k: 'keep', a: 'assimilate', d: 'drop', v: 'vowel', q: 'quiesce', c: 'contract', g: 'guttural' };
+const STATES = {
+  keep:       { cap: 'stays',                  phrase: 'stays as a pronounced consonant' },
+  assimilate: { cap: 'merges into next letter', phrase: 'merges into the next letter' },
+  drop:       { cap: 'drops out',              phrase: 'drops out' },
+  vowel:      { cap: 'vowel letter only',      phrase: 'is written only as a vowel letter' },
+  quiesce:    { cap: 'written, silent',        phrase: 'is written but silent' },
+  contract:   { cap: 'merges with its twin',   phrase: 'merges with the identical letter' },
+  guttural:   { cap: 'stays, shapes vowels',   phrase: 'stays, but shapes the surrounding vowels' }
+};
+
+const KEYS = {
+  perf3ms: { g: 'Perfect',              l: '3 m.s.' },
+  perf3fs: { g: 'Perfect',              l: '3 f.s.' },
+  perf1cs: { g: 'Perfect',              l: '1 c.s.' },
+  imp3ms:  { g: 'Imperfect',            l: '3 m.s.' },
+  imp3mp:  { g: 'Imperfect',            l: '3 m.pl.' },
+  way3ms:  { g: 'Wayyiqtol',            l: '3 m.s.' },
+  impvms:  { g: 'Imperative',           l: 'm.s.' },
+  infc:    { g: 'Infinitive construct', l: '' }
+};
+
+/* the strong verb קָטַל, split into the same three pieces */
+const STRONG_WORD = 'קָטַל';
+const STRONG = {
+  perf3ms: { pre: '',    stem: 'קָטַל',  suf: '' },
+  perf3fs: { pre: '',    stem: 'קָטְל',  suf: 'ָה' },
+  perf1cs: { pre: '',    stem: 'קָטַלְ', suf: 'תִּי' },
+  imp3ms:  { pre: 'יִ',  stem: 'קְטֹל',  suf: '' },
+  imp3mp:  { pre: 'יִ',  stem: 'קְטְל',  suf: 'וּ' },
+  way3ms:  { pre: 'וַיִּ', stem: 'קְטֹל',  suf: '' },
+  impvms:  { pre: '',    stem: 'קְטֹל',  suf: '' },
+  infc:    { pre: '',    stem: 'קְטֹל',  suf: '' }
+};
+
+/* =====================  TYPES AND VERBS  ===================== */
+const TYPES = {
+
+  penun: {
+    grp: 'First letter weak (פ״)',
+    short: 'Pe-nun (נ״פ)',
+    name: 'Pe-nun (נ״פ): first root letter is נ',
+    summary: 'A נ with no vowel of its own, right before another consonant, merges into it (assimilation). At the start of a word, with nothing to merge into, it drops. When it carries its own vowel, as in the perfect, nothing happens.',
+    states: ['keep', 'assimilate', 'drop'],
+    reasons: {
+      full:   ['The נ is the first letter of the word and carries its own vowel, so it is a normal pronounced consonant.',
+               'Nothing changes. The perfect of a pe-nun verb looks like a strong verb.'],
+      assim:  ['After the prefix, the נ has no vowel of its own and sits directly in front of the next consonant.',
+               'The נ merges into the next letter, which doubles (dagesh forte) as a trace of it.'],
+      drop:   ['There is no prefix here, so the נ would stand at the very start of the word with no vowel and nothing in front of it to merge into.',
+               'The נ drops out and the next letter opens the word.']
+    },
+    verbs: {
+      nagash: {
+        name: 'נָגַשׁ: approach',
+        root: [{ ch: 'נ', name: 'nun' }, { ch: 'ג', name: 'gimel' }, { ch: 'שׁ', name: 'shin' }],
+        weak: [0],
+        rows: [
+          ['perf3ms', 'full',  '',    'נָגַשׁ',  '',     'kkk'],
+          ['perf3fs', 'full',  '',    'נָגְשׁ',  'ָה',   'kkk'],
+          ['perf1cs', 'full',  '',    'נָגַשְׁ', 'תִּי', 'kkk'],
+          ['imp3ms',  'assim', 'יִ',  'גַּשׁ',   '',     'akk'],
+          ['imp3mp',  'assim', 'יִ',  'גְּשׁ',   'וּ',   'akk'],
+          ['way3ms',  'assim', 'וַיִּ', 'גַּשׁ',   '',     'akk'],
+          ['impvms',  'drop',  '',    'גַּשׁ',   '',     'dkk'],
+          ['infc',    'drop',  '',    'גֶּשֶׁ',  'ת',    'dkk', 'The final ת is a separate ending that this kind of infinitive takes. It is not the נ coming back.']
+        ]
+      }
+    }
+  },
+
+  peyod: {
+    grp: 'First letter weak (פ״)',
+    short: 'Pe-yod / pe-vav (י״פ)',
+    name: 'Pe-yod / pe-vav (י״פ): first root letter is י',
+    summary: 'The first root letter (originally a ו) is a normal consonant in the perfect. After the imperfect prefix, and at the start of the imperative and infinitive, it disappears. The imperfect prefix takes a different vowel.',
+    states: ['keep', 'drop'],
+    reasons: {
+      full: ['The י carries its own vowel (qamets) at the start of the word, so it is a normal pronounced consonant.',
+             'Nothing changes. The perfect is regular.'],
+      imp:  ['After the imperfect prefix, the first root letter is too weak to be pronounced as a consonant.',
+             'It falls away, and the prefix vowel lengthens to tsere (יֵ-) in place of the hiriq (יִ-) of the strong verb.'],
+      init: ['The imperative and the infinitive construct have no prefix, so the weak first letter would stand at the start of the word.',
+             'It drops, and the second root letter opens the word.']
+    },
+    verbs: {
+      yashav: {
+        name: 'יָשַׁב: sit, dwell',
+        root: [{ ch: 'י', name: 'yod' }, { ch: 'שׁ', name: 'shin' }, { ch: 'ב', name: 'bet' }],
+        weak: [0],
+        rows: [
+          ['perf3ms', 'full', '',    'יָשַׁב',  '',     'kkk'],
+          ['perf3fs', 'full', '',    'יָשְׁב',  'ָה',   'kkk'],
+          ['perf1cs', 'full', '',    'יָשַׁבְ', 'תִּי', 'kkk'],
+          ['imp3ms',  'imp',  'יֵ',  'שֵׁב',   '',     'dkk'],
+          ['imp3mp',  'imp',  'יֵ',  'שְׁב',   'וּ',   'dkk'],
+          ['way3ms',  'imp',  'וַיֵּ', 'שֶׁב',   '',     'dkk', 'The wayyiqtol uses the shortened form, so the stem vowel is segol (וַיֵּשֶׁב) rather than tsere.'],
+          ['impvms',  'init', '',    'שֵׁב',   '',     'dkk'],
+          ['infc',    'init', '',    'שֶׁבֶ',  'ת',    'dkk', 'The final ת is a separate ending that this kind of infinitive takes.']
+        ]
+      }
+    }
+  },
+
+  pealeph: {
+    grp: 'First letter weak (פ״)',
+    short: 'Pe-aleph (א״פ)',
+    name: 'Pe-aleph (א״פ): first root letter is א',
+    summary: 'The א is pronounced in the perfect. After the imperfect prefix it stays written but goes silent (it quiesces), and the prefix takes ō. At the start of the imperative and infinitive it is pronounced and takes a composite shewa.',
+    states: ['keep', 'quiesce', 'drop'],
+    reasons: {
+      full: ['The א begins the word with its own vowel (qamets), so it is pronounced as a consonant (a glottal stop).',
+             'Nothing changes. The perfect is regular.'],
+      imp:  ['After the prefix, the א has no vowel of its own, so it is no longer pronounced.',
+             'The א is still written but silent (it quiesces), and the prefix takes ō (יֹ-) in place of the hiriq of the strong verb.'],
+      init: ['The א begins the word and is pronounced.',
+             'It stays, and because it is a guttural it takes a composite shewa (אֱ) rather than a plain shewa.']
+    },
+    verbs: {
+      amar: {
+        name: 'אָמַר: say',
+        root: [{ ch: 'א', name: 'aleph' }, { ch: 'מ', name: 'mem' }, { ch: 'ר', name: 'resh' }],
+        weak: [0],
+        rows: [
+          ['perf3ms', 'full', '',    'אָמַר',  '',     'kkk'],
+          ['perf3fs', 'full', '',    'אָמְר',  'ָה',   'kkk'],
+          ['perf1cs', 'full', '',    'אָמַרְ', 'תִּי', 'kkk'],
+          ['imp3ms',  'imp',  'יֹ',  'אמַר',   '',     'qkk'],
+          ['imp3mp',  'imp',  'יֹ',  'אמְר',   'וּ',   'qkk'],
+          ['way3ms',  'imp',  'וַיֹּ', 'אמֶר',   '',     'qkk', 'This is the very common narrative form "and he said".'],
+          ['impvms',  'init', '',    'אֱמֹר',  '',     'kkk'],
+          ['infc',    'init', '',    'אֱמֹר',  '',     'kkk', 'With the preposition ל this becomes לֵאמֹר ("saying"), where the א is silent.']
+        ]
+      }
+    }
+  },
+
+  hollow: {
+    grp: 'Middle letter weak (ע״)',
+    short: 'Hollow: ayin-vav / ayin-yod (ע״ו / ע״י)',
+    name: 'Hollow verbs: ayin-vav / ayin-yod (ע״ו / ע״י): middle root letter is ו or י',
+    summary: 'The middle letter is a ו or י, so the root looks like two letters. In the perfect the middle letter is simply absent. In the imperfect, imperative and infinitive it is absorbed into the stem vowel and written as a vowel letter. The imperfect prefix takes qamets.',
+    states: ['keep', 'vowel', 'drop'],
+    reasons: {
+      perf:  ['In the perfect, the middle ו or י is not pronounced as a consonant, so the stem is reduced to its first and last letters.',
+              'The middle letter is simply absent. The stem vowel is long, and shortens before an ending that starts with a consonant.'],
+      vow:   ['In the imperfect, imperative and infinitive, the middle ו or י is absorbed into the stem vowel.',
+              'It is written as a vowel letter (ו for ū, י for î) rather than pronounced as a consonant. An imperfect prefix takes qamets (יָ-).'],
+      short: ['The wayyiqtol uses a shortened form of the imperfect, with the stress pulled back, so the long vowel shortens.',
+              'The middle letter is absent again, as in the perfect, and the stem vowel is short.']
+    },
+    verbs: {
+      qum: {
+        name: 'קוּם → קָם: arise (ע״ו)',
+        root: [{ ch: 'ק', name: 'qof' }, { ch: 'ו', name: 'vav' }, { ch: 'ם', name: 'mem' }],
+        weak: [1],
+        rows: [
+          ['perf3ms', 'perf',  '',    'קָם',   '',     'kdk'],
+          ['perf3fs', 'perf',  '',    'קָמ',   'ָה',   'kdk'],
+          ['perf1cs', 'perf',  '',    'קַמְ',  'תִּי', 'kdk'],
+          ['imp3ms',  'vow',   'יָ',  'קוּם',  '',     'kvk'],
+          ['imp3mp',  'vow',   'יָ',  'קוּמ',  'וּ',   'kvk'],
+          ['way3ms',  'short', 'וַיָּ', 'קָם',   '',     'kdk'],
+          ['impvms',  'vow',   '',    'קוּם',  '',     'kvk'],
+          ['infc',    'vow',   '',    'קוּם',  '',     'kvk']
+        ]
+      },
+      sim: {
+        name: 'שִׂים → שָׂם: put, place (ע״י)',
+        root: [{ ch: 'שׂ', name: 'sin' }, { ch: 'י', name: 'yod' }, { ch: 'ם', name: 'mem' }],
+        weak: [1],
+        rows: [
+          ['perf3ms', 'perf',  '',    'שָׂם',   '',     'kdk'],
+          ['perf3fs', 'perf',  '',    'שָׂמ',   'ָה',   'kdk'],
+          ['perf1cs', 'perf',  '',    'שַׂמְ',  'תִּי', 'kdk'],
+          ['imp3ms',  'vow',   'יָ',  'שִׂים',  '',     'kvk'],
+          ['imp3mp',  'vow',   'יָ',  'שִׂימ',  'וּ',   'kvk'],
+          ['way3ms',  'short', 'וַיָּ', 'שֶׂם',   '',     'kdk'],
+          ['impvms',  'vow',   '',    'שִׂים',  '',     'kvk'],
+          ['infc',    'vow',   '',    'שִׂים',  '',     'kvk']
+        ]
+      }
+    }
+  },
+
+  geminate: {
+    grp: 'Middle letter weak (ע״)',
+    short: 'Geminate: ayin-ayin (ע״ע)',
+    name: 'Geminate verbs: ayin-ayin (ע״ע): second and third root letters are identical',
+    summary: 'Where no full vowel separates the two identical letters, they run together and are written as one, so the stem looks like a two-letter root. That letter is doubled where a vowel follows it. The imperfect prefix takes qamets.',
+    states: ['keep', 'contract'],
+    reasons: {
+      full:     ['In the 3 m.s. perfect, a vowel separates the two identical letters, so both are pronounced.',
+                 'Nothing changes. This form looks like a strong verb.'],
+      contract: ['The second and third letters are identical, and no full vowel separates them here, so they run together.',
+                 'They are written as one letter, so the stem looks like a two-letter root. That letter doubles (dagesh) where a vowel follows, and an imperfect prefix takes qamets (יָ-).']
+    },
+    verbs: {
+      savav: {
+        name: 'סָבַב: surround, turn',
+        root: [{ ch: 'ס', name: 'samekh' }, { ch: 'ב', name: 'bet' }, { ch: 'ב', name: 'bet' }],
+        weak: [1, 2],
+        rows: [
+          ['perf3ms', 'full',     '',    'סָבַב', '',      'kkk'],
+          ['perf3fs', 'contract', '',    'סַבּ',  'ָה',    'kkc'],
+          ['perf1cs', 'contract', '',    'סַבּ',  'וֹתִי', 'kkc', 'A connecting vowel וֹ (ō) appears before the consonant ending.'],
+          ['imp3ms',  'contract', 'יָ',  'סֹב',   '',      'kkc'],
+          ['imp3mp',  'contract', 'יָ',  'סֹבּ',  'וּ',    'kkc'],
+          ['way3ms',  'contract', 'וַיָּ', 'סָב',   '',      'kkc'],
+          ['impvms',  'contract', '',    'סֹב',   '',      'kkc'],
+          ['infc',    'contract', '',    'סֹב',   '',      'kkc', 'The infinitive construct also occurs as סְבֹב, with no contraction.']
+        ]
+      }
+    }
+  },
+
+  lamedhe: {
+    grp: 'Final letter weak (ל״)',
+    short: 'Lamed-he (ל״ה)',
+    name: 'Lamed-he (ל״ה): third root letter is ה',
+    summary: 'The final ה (originally י) is written as a vowel letter at the end of some forms. It drops out before endings and in short forms, and a connecting vowel appears before consonant endings.',
+    states: ['keep', 'vowel', 'drop'],
+    reasons: {
+      mater: ['Here the final ה is not a real consonant. It is a vowel letter that marks the final vowel.',
+              'It stays written but is not pronounced as a consonant.'],
+      f3:    ['The 3 f.s. ending attaches straight onto the shortened stem, so there is no room for the final ה.',
+              'The ה drops and the ending shows up as תָה (the old feminine ת is visible).'],
+      conn:  ['Before an ending that begins with a consonant, the final ה gives way and a connecting vowel appears.',
+              'The ה drops, and a connecting ִי sits between the stem and the ending.'],
+      vend:  ['Before a vowel ending, the final ה gives way.',
+              'The ה drops, and the ending attaches directly to the stem.'],
+      short: ['The wayyiqtol uses the shortened (apocopated) form of the imperfect.',
+              'The final ה drops, and the stem vowel often changes (here to segol).'],
+      inf:   ['The infinitive construct of a lamed-he verb takes the ending וֹת in place of the final ה.',
+              'The ה drops and וֹת is attached.']
+    },
+    verbs: {
+      banah: {
+        name: 'בָּנָה: build',
+        root: [{ ch: 'ב', name: 'bet' }, { ch: 'נ', name: 'nun' }, { ch: 'ה', name: 'he' }],
+        weak: [2],
+        rows: [
+          ['perf3ms', 'mater', '',    'בָּנָה', '',      'kkv'],
+          ['perf3fs', 'f3',    '',    'בָּנְ',  'תָה',   'kkd'],
+          ['perf1cs', 'conn',  '',    'בָּנ',   'ִיתִי', 'kkd'],
+          ['imp3ms',  'mater', 'יִ',  'בְנֶה',  '',      'kkv'],
+          ['imp3mp',  'vend',  'יִ',  'בְנ',    'וּ',    'kkd'],
+          ['way3ms',  'short', 'וַיִּ', 'בֶן',    '',      'kkd'],
+          ['impvms',  'mater', '',    'בְּנֵה', '',      'kkv'],
+          ['infc',    'inf',   '',    'בְּנ',   'וֹת',   'kkd']
+        ]
+      }
+    }
+  },
+
+  lamedaleph: {
+    grp: 'Final letter weak (ל״)',
+    short: 'Lamed-aleph (ל״א)',
+    name: 'Lamed-aleph (ל״א): third root letter is א',
+    summary: 'When the final א closes a syllable it is written but silent, and the vowel before it stays long. When a vowel follows the א (as in the 3 f.s. perfect and the vowel endings), it is pronounced and the form is regular.',
+    states: ['keep', 'quiesce'],
+    reasons: {
+      quiesce: ['The final א closes the syllable (nothing follows it, or a consonant follows), so it is not pronounced.',
+                'The א is still written but silent (it quiesces), and the vowel before it stays long.'],
+      keep:    ['A vowel follows the א, so it begins a syllable and is pronounced as a consonant.',
+                'The א stays, and the form is regular.']
+    },
+    verbs: {
+      matsa: {
+        name: 'מָצָא: find',
+        root: [{ ch: 'מ', name: 'mem' }, { ch: 'צ', name: 'tsade' }, { ch: 'א', name: 'aleph' }],
+        weak: [2],
+        rows: [
+          ['perf3ms', 'quiesce', '',    'מָצָא', '',     'kkq'],
+          ['perf3fs', 'keep',    '',    'מָצְא', 'ָה',   'kkk'],
+          ['perf1cs', 'quiesce', '',    'מָצָא', 'תִי',  'kkq', 'There is no dagesh in the ת here, because the syllable before it is open (the silent א does not close it).'],
+          ['imp3ms',  'quiesce', 'יִ',  'מְצָא', '',     'kkq'],
+          ['imp3mp',  'keep',    'יִ',  'מְצְא', 'וּ',   'kkk'],
+          ['way3ms',  'quiesce', 'וַיִּ', 'מְצָא', '',     'kkq'],
+          ['impvms',  'quiesce', '',    'מְצָא', '',     'kkq'],
+          ['infc',    'quiesce', '',    'מְצֹא', '',     'kkq']
+        ]
+      }
+    }
+  },
+
+  guttural: {
+    grp: 'Guttural verbs',
+    short: 'Guttural verbs (א ה ח ע)',
+    name: 'Guttural verbs: a root letter is א, ה, ח or ע',
+    summary: 'Nothing drops out here; the vowels change. Gutturals (א ה ח ע, and ר in some ways) cannot take a dagesh or a plain shewa and prefer a-class vowels. The weak letter can be the first, second or third root letter, and the effect shows only in certain forms.',
+    states: ['keep', 'guttural'],
+    reasons: {
+      none: ['In this form the guttural does not change the vowels.',
+             'The form follows the strong verb pattern.'],
+      p1:   ['The first root letter is a guttural. Gutturals cannot take a plain shewa or a dagesh, and they prefer a-class vowels.',
+             'Expect a patach under the prefix (יַ-) and a composite shewa under the guttural (עֲ-) in place of the strong verb pattern.'],
+      p2:   ['The middle root letter is a guttural, which prefers a-class vowels and composite shewa.',
+             'Expect a patach where the strong verb has ō, and a composite shewa where the strong verb has a plain shewa.'],
+      p3:   ['The final root letter is a guttural, which wants an a-class vowel before it.',
+             'Expect a patach where the strong verb has ō, and a furtive patach in the infinitive construct.']
+    },
+    verbs: {
+      amad: {
+        name: 'עָמַד: stand (first letter guttural)',
+        root: [{ ch: 'ע', name: 'ayin' }, { ch: 'מ', name: 'mem' }, { ch: 'ד', name: 'dalet' }],
+        weak: [0],
+        rows: [
+          ['perf3ms', 'none', '',    'עָמַד',  '',     'kkk'],
+          ['perf3fs', 'none', '',    'עָמְד',  'ָה',   'kkk'],
+          ['perf1cs', 'none', '',    'עָמַדְ', 'תִּי', 'kkk'],
+          ['imp3ms',  'p1',   'יַ',  'עֲמֹד',  '',     'gkk'],
+          ['imp3mp',  'p1',   'יַ',  'עַמְד',  'וּ',   'gkk'],
+          ['way3ms',  'p1',   'וַיַּ', 'עֲמֹד',  '',     'gkk'],
+          ['impvms',  'p1',   '',    'עֲמֹד',  '',     'gkk'],
+          ['infc',    'p1',   '',    'עֲמֹד',  '',     'gkk']
+        ]
+      },
+      bachar: {
+        name: 'בָּחַר: choose (middle letter guttural)',
+        root: [{ ch: 'ב', name: 'bet' }, { ch: 'ח', name: 'het' }, { ch: 'ר', name: 'resh' }],
+        weak: [1],
+        rows: [
+          ['perf3ms', 'none', '',    'בָּחַר',  '',     'kkk'],
+          ['perf3fs', 'p2',   '',    'בָּחֲר',  'ָה',   'kgk'],
+          ['perf1cs', 'none', '',    'בָּחַרְ', 'תִּי', 'kkk'],
+          ['imp3ms',  'p2',   'יִ',  'בְחַר',   '',     'kgk'],
+          ['imp3mp',  'p2',   'יִ',  'בְחֲר',   'וּ',   'kgk'],
+          ['way3ms',  'p2',   'וַיִּ', 'בְחַר',   '',     'kgk'],
+          ['impvms',  'p2',   '',    'בְּחַר',  '',     'kgk'],
+          ['infc',    'none', '',    'בְּחֹר',  '',     'kkk']
+        ]
+      },
+      shalach: {
+        name: 'שָׁלַח: send (final letter guttural)',
+        root: [{ ch: 'שׁ', name: 'shin' }, { ch: 'ל', name: 'lamed' }, { ch: 'ח', name: 'het' }],
+        weak: [2],
+        rows: [
+          ['perf3ms', 'none', '',    'שָׁלַח',  '',     'kkk'],
+          ['perf3fs', 'none', '',    'שָׁלְח',  'ָה',   'kkk'],
+          ['perf1cs', 'none', '',    'שָׁלַחְ', 'תִּי', 'kkk'],
+          ['imp3ms',  'p3',   'יִ',  'שְׁלַח',  '',     'kkg'],
+          ['imp3mp',  'none', 'יִ',  'שְׁלְח',  'וּ',   'kkk'],
+          ['way3ms',  'p3',   'וַיִּ', 'שְׁלַח',  '',     'kkg'],
+          ['impvms',  'p3',   '',    'שְׁלַח',  '',     'kkg'],
+          ['infc',    'p3',   '',    'שְׁלֹחַ', '',     'kkg']
+        ]
+      }
+    }
+  }
+};
+/* ===================  END TYPES AND VERBS  =================== */
+
+/* turn the compact rows into form objects */
+(function normalise() {
+  Object.keys(TYPES).forEach(tid => {
+    const t = TYPES[tid];
+    Object.keys(t.verbs).forEach(vid => {
+      const v = t.verbs[vid];
+      v.forms = v.rows.map(r => {
+        const k = r[0];
+        return {
+          k: k, r: r[1], pre: r[2], stem: r[3], suf: r[4],
+          st: r[5].split('').map(c => CODE[c]),
+          n: r[6] || '',
+          g: KEYS[k].g,
+          l: KEYS[k].g + (KEYS[k].l ? ' · ' + KEYS[k].l : ''),
+          sh: KEYS[k].l || 'infinitive',
+          w: r[2] + r[3] + r[4]
+        };
+      });
+    });
+  });
+})();
+
+/* ---------- state ---------- */
+const $ = id => document.getElementById(id);
+const S = { type: Object.keys(TYPES)[0], verb: null, tab: 'watch',
+            wForm: 0, wStep: 0,
+            order: [], pi: 0, pst: [], pdone: false, right: 0, tried: 0 };
+const T = () => TYPES[S.type];
+const V = () => T().verbs[S.verb];
+const F = () => V().forms;
+const ORD = ['first', 'second', 'third'];
+
+function skeleton(states) {
+  const r = V().root; let out = '', pend = false;
+  for (let i = 0; i < r.length; i++) {
+    const s = states[i];
+    if (s === 'assimilate') { pend = true; }
+    else if (s === 'drop' || s === 'contract') { /* not written */ }
+    else { out += r[i].ch + (pend ? D : ''); pend = false; }
+  }
+  return out;
+}
+
+function weakNames() {
+  const v = V();
+  return v.weak.map(i => ORD[i] + ' (' + v.root[i].ch + ', ' + v.root[i].name + ')').join(' and ');
+}
+
+/* ---------- tile builders ---------- */
+function mkTile(text, cls, tag) {
+  const el = document.createElement(tag || 'div');
+  el.className = 'tile ' + (cls || '');
+  const s = document.createElement('span'); s.className = 'he'; s.lang = 'he'; s.textContent = text;
+  el.appendChild(s);
+  return el;
+}
+function mkPiece(tile, cap) {
+  const p = document.createElement('div'); p.className = 'piece';
+  p.appendChild(tile);
+  const c = document.createElement('div'); c.className = 'cap'; c.textContent = cap || '';
+  p.appendChild(c);
+  return p;
+}
+
+/* ---------- WATCH ---------- */
+const WATCH_STEPS = 5;
+function wForm() { return F()[S.wForm]; }
+
+function buildWatchLetters() {
+  const f = wForm(), v = V(), box = $('w-letters'), step = S.wStep;
+  box.innerHTML = '';
+  const tiles = [];
+  if (step >= 1 && f.pre) box.appendChild(mkPiece(mkTile(f.pre, 'pat'), 'prefix'));
+  v.root.forEach((r, i) => {
+    const t = mkTile(r.ch, step >= 2 && v.weak.indexOf(i) >= 0 ? 'weak' : '');
+    tiles.push(t);
+    box.appendChild(mkPiece(t, r.name));
+  });
+  if (step >= 1 && f.suf) box.appendChild(mkPiece(mkTile(disp(f.suf), 'pat'), 'ending'));
+
+  const applyNow = () => {
+    f.st.forEach((s, i) => {
+      if (s === 'keep') return;
+      const t = tiles[i];
+      t.classList.add('s-' + s);
+      if (s === 'assimilate' && tiles[i + 1]) {
+        tiles[i + 1].classList.add('target');
+        tiles[i + 1].firstChild.textContent = v.root[i + 1].ch + D;
+      }
+      if (s === 'contract' && tiles[i - 1]) tiles[i - 1].classList.add('target');
+      t.parentNode.lastChild.textContent = STATES[s].cap;
+    });
+  };
+  if (step === 3) {
+    requestAnimationFrame(() => requestAnimationFrame(applyNow));
+  } else if (step >= 4) {
+    tiles.forEach(t => t.style.transition = 'none');
+    applyNow();
+    requestAnimationFrame(() => tiles.forEach(t => t.style.transition = ''));
+  }
+}
+
+function cmpPiece(label, weak, strong) {
+  if (!weak && !strong) return '';
+  if (weak === strong) return '<div>' + label + ': same as the strong verb.</div>';
+  if (!strong) return '<div>' + label + ': this form has one that the strong form does not have here.</div>';
+  if (!weak) return '<div>' + label + ': the strong form has one here; this form does not.</div>';
+  if (strip(weak) === strip(strong)) return '<div>' + label + ': same letters as the strong verb, different pointing (vowels or dagesh).</div>';
+  return '<div>' + label + ': different from the strong verb.</div>';
+}
+function box(text, diff) {
+  return '<span class="cbox he' + (!text ? ' empty' : '') + (diff ? ' diff' : '') + '" lang="he">' + disp(text) + '</span>';
+}
+function renderCompare(f) {
+  const s = STRONG[f.k];
+  const dp = (f.pre || '') !== (s.pre || ''), dsf = (f.suf || '') !== (s.suf || '');
+  const changed = f.st.some(x => x !== 'keep');
+  const rootCh = V().root;
+  const what = f.st.map((x, i) => x === 'keep' ? '' : rootCh[i].ch + ' ' + STATES[x].phrase).filter(Boolean).join('; ');
+  const stemLine = changed
+    ? 'Stem: reshaped by the weak letter (' + what + ').'
+    : 'Stem: nothing is reshaped in this form, so it looks like a strong verb.';
+  const row = (lbl, word, p, st, sf, dPre, dSt, dSuf) =>
+    '<div class="crow"><div class="clbl">' + lbl + '</div><div class="he cword" lang="he">' + word + '</div>' +
+    '<div class="cpieces">' + box(p, dPre) + box(st, dSt) + box(sf, dSuf) + '</div></div>';
+  return '<div class="small" style="margin-top:6px">Compared with the strong verb (prefix, stem, ending):</div>' +
+    row('Strong verb', s.pre + s.stem + s.suf, s.pre, s.stem, s.suf, false, false, false) +
+    row('This verb', f.w, f.pre, f.stem, f.suf, dp, changed, dsf) +
+    '<div class="clines">' + cmpPiece('Prefix', f.pre, s.pre) + cmpPiece('Ending', f.suf, s.suf) +
+    '<div>' + stemLine + '</div></div>';
+}
+
+function renderWatch() {
+  const f = wForm(), v = V(), step = S.wStep, t = T();
+  $('form').value = String(S.wForm);
+  $('w-head').textContent = f.l;
+  const rootStr = v.root.map(r => r.ch).join('');
+  const rs = t.reasons[f.r];
+  const phr = v.weak.map(i => v.root[i].ch + ' ' + STATES[f.st[i]].phrase).join('; ');
+  const titles = ['Start with the root', 'Add the pattern for this form', 'Look at the weak letter', 'Apply the rule', 'Result'];
+  const descs = [
+    'The root is ' + rootStr + '. The weak letter' + (v.weak.length > 1 ? 's are the ' : ' is the ') + weakNames() + '.',
+    (f.pre || f.suf)
+      ? 'For "' + f.l + '" the root takes ' + [f.pre ? 'the prefix ' + f.pre : '', f.suf ? 'the ending ' + disp(f.suf) : ''].filter(Boolean).join(' and ') + '.'
+      : 'For "' + f.l + '" nothing is added in front of or after the root.',
+    rs[0],
+    rs[1] + ' (' + phr + '.)',
+    'The finished form:'
+  ];
+  $('w-title').textContent = (step + 1) + '. ' + titles[step];
+  $('w-desc').textContent = descs[step];
+  const wd = $('w-word'), cm = $('w-cmp');
+  if (step === 4) {
+    wd.classList.remove('hide'); wd.textContent = f.w;
+    cm.classList.remove('hide'); cm.innerHTML = renderCompare(f);
+    if (f.n) $('w-desc').textContent = f.n; else $('w-desc').textContent = '';
+  } else { wd.classList.add('hide'); cm.classList.add('hide'); cm.innerHTML = ''; }
+  $('w-dots').innerHTML = Array.from({ length: WATCH_STEPS }, (_, i) => '<span class="dot' + (i === step ? ' on' : '') + '"></span>').join('');
+  $('w-back').disabled = step === 0;
+  $('w-next').disabled = step === WATCH_STEPS - 1;
+  buildWatchLetters();
+}
+
+function fillFormSelect(sel) {
+  sel.innerHTML = '';
+  let grp = null, og = null;
+  F().forEach((f, i) => {
+    if (f.g !== grp) { og = document.createElement('optgroup'); og.label = f.g; sel.appendChild(og); grp = f.g; }
+    const o = document.createElement('option'); o.value = i; o.textContent = f.sh; og.appendChild(o);
+  });
+}
+function buildFormSelect() {
+  fillFormSelect($('form'));
+  fillFormSelect($('pform'));
+}
+
+/* ---------- PRACTISE ---------- */
+function pForm() { return F()[S.order[S.pi]]; }
+function setOrder(shuffle) {
+  const a = F().map((_, i) => i);
+  if (shuffle) for (let j = a.length - 1; j > 0; j--) { const r = Math.floor(Math.random() * (j + 1)); [a[j], a[r]] = [a[r], a[j]]; }
+  S.order = a; S.pi = 0;
+}
+
+function renderPractice() {
+  const f = pForm();
+  $('pform').value = String(S.order[S.pi]);
+  $('p-prompt').textContent = f.l;
+  const bits = [];
+  if (f.pre) bits.push('the prefix ' + f.pre);
+  if (f.suf) bits.push('the ending ' + disp(f.suf));
+  $('p-sub').textContent = bits.length ? 'This form takes ' + bits.join(' and ') + '.' : 'This form takes no prefix and no ending.';
+  $('p-how').textContent = 'Tap each root letter to choose what happens to it. Available choices: ' +
+    T().states.map(s => STATES[s].cap).join('; ') + '.';
+  $('score').textContent = 'Practice score ' + S.right + ' / ' + S.tried;
+  S.pst = V().root.map(() => 'keep'); S.pdone = false;
+  $('p-fb').innerHTML = '';
+  drawPractice();
+}
+
+function drawPractice(marks) {
+  const bx = $('p-letters'); bx.innerHTML = '';
+  const f = pForm();
+  if (f.pre) bx.appendChild(mkPiece(mkTile(f.pre, 'pat'), 'prefix'));
+  V().root.forEach((r, i) => {
+    let cls = 's-' + S.pst[i];
+    if (marks) cls += marks[i] ? ' ok' : ' bad';
+    const t = mkTile(r.ch, cls, 'button');
+    t.type = 'button';
+    t.addEventListener('click', () => {
+      const opts = T().states;
+      S.pst[i] = opts[(opts.indexOf(S.pst[i]) + 1) % opts.length];
+      S.pdone = false; $('p-fb').innerHTML = '';
+      drawPractice();
+    });
+    bx.appendChild(mkPiece(t, STATES[S.pst[i]].cap));
+  });
+  if (f.suf) bx.appendChild(mkPiece(mkTile(disp(f.suf), 'pat'), 'ending'));
+  $('p-skel').textContent = skeleton(S.pst) || '—';
+}
+
+function explain(f) {
+  const rs = T().reasons[f.r];
+  return '<div class="small" style="margin-top:4px">' + rs[0] + '</div>' +
+         '<div class="small" style="margin-top:4px">' + rs[1] + '</div>' +
+         (f.n ? '<div class="small" style="margin-top:4px">' + f.n + '</div>' : '');
+}
+
+function pCheck() {
+  const f = pForm();
+  const marks = f.st.map((s, i) => s === S.pst[i]);
+  const all = marks.every(Boolean);
+  if (!S.pdone) { S.tried++; if (all) S.right++; }
+  S.pdone = true;
+  $('score').textContent = 'Practice score ' + S.right + ' / ' + S.tried;
+  drawPractice(marks);
+  if (all) {
+    $('p-fb').innerHTML = '<div class="ok-t">Correct. Full form: <span class="he full" lang="he">' + f.w + '</span></div>' + explain(f);
+  } else {
+    S.pdone = false;
+    const v = V();
+    const names = v.weak.map(i => v.root[i].ch).join(' and ');
+    const wrongWeak = v.weak.some(i => !marks[i]);
+    const hint = wrongWeak
+      ? 'Look at the weak letter (' + names + '): does it have a vowel of its own here, and what stands in front of it or after it?'
+      : 'The weak letter is right. Check the other letters: they should not change.';
+    $('p-fb').innerHTML = '<span class="bad-t">Not quite. ' + hint + '</span>';
+  }
+}
+function pShow() {
+  const f = pForm();
+  S.pst = f.st.slice(); S.pdone = true;
+  drawPractice();
+  $('p-fb').innerHTML = '<div class="small">Answer: <span class="he full" lang="he" style="color:var(--fg)">' + f.w + '</span></div>' + explain(f);
+}
+function pNext() {
+  if (S.pi < F().length - 1) { S.pi++; renderPractice(); }
+  else {
+    $('p-prompt').textContent = 'Round complete';
+    $('p-sub').textContent = ''; $('p-how').textContent = '';
+    $('p-letters').innerHTML = ''; $('p-skel').textContent = '';
+    $('p-fb').innerHTML = '<span class="small">You finished all ' + F().length + ' forms. Press Shuffle to go again, or switch verb or type.</span>';
+  }
+}
+
+/* ---------- navigation ---------- */
+function setTab(t) {
+  const prev = S.tab;
+  S.tab = t;
+  /* keep the two tabs on the same form when the learner switches between them */
+  if (prev !== t) {
+    if (t === 'prac') S.pi = Math.max(0, S.order.indexOf(S.wForm));
+    else { S.wForm = S.order[S.pi]; S.wStep = 0; }
+  }
+  $('t-watch').classList.toggle('on', t === 'watch');
+  $('t-prac').classList.toggle('on', t === 'prac');
+  $('watch').classList.toggle('hide', t !== 'watch');
+  $('prac').classList.toggle('hide', t !== 'prac');
+  if (t === 'watch') renderWatch(); else renderPractice();
+}
+
+function loadVerb() {
+  $('type-name').textContent = T().name;
+  $('type-sum').textContent = T().summary;
+  S.wForm = 0; S.wStep = 0; S.right = 0; S.tried = 0;
+  buildFormSelect();
+  setOrder(false);
+  setTab(S.tab);
+}
+
+function buildSelects() {
+  const ts = $('type');
+  ts.innerHTML = '';
+  let grp = null, og = null;
+  Object.keys(TYPES).forEach(id => {
+    const g = TYPES[id].grp;
+    if (g !== grp) { og = document.createElement('optgroup'); og.label = g; ts.appendChild(og); grp = g; }
+    const o = document.createElement('option'); o.value = id; o.textContent = TYPES[id].short; og.appendChild(o);
+  });
+  ts.value = S.type;
+  ts.onchange = () => { S.type = ts.value; S.verb = Object.keys(T().verbs)[0]; fillVerbs(); loadVerb(); };
+  S.verb = Object.keys(T().verbs)[0];
+  fillVerbs();
+}
+function fillVerbs() {
+  const vs = $('verb');
+  vs.innerHTML = Object.keys(T().verbs).map(id => '<option value="' + id + '">' + T().verbs[id].name + '</option>').join('');
+  vs.value = S.verb;
+  vs.onchange = () => { S.verb = vs.value; loadVerb(); };
+}
+
+$('t-watch').onclick = () => setTab('watch');
+$('t-prac').onclick = () => setTab('prac');
+$('form').onchange = e => { S.wForm = +e.target.value; S.wStep = 0; renderWatch(); };
+$('w-next').onclick = () => { if (S.wStep < WATCH_STEPS - 1) { S.wStep++; renderWatch(); } };
+$('w-back').onclick = () => { if (S.wStep > 0) { S.wStep--; renderWatch(); } };
+$('w-replay').onclick = () => { S.wStep = 0; renderWatch(); };
+$('pform').onchange = e => { S.pi = Math.max(0, S.order.indexOf(+e.target.value)); renderPractice(); };
+$('p-check').onclick = pCheck;
+$('p-show').onclick = pShow;
+$('p-next').onclick = pNext;
+$('p-shuf').onclick = () => { S.right = 0; S.tried = 0; setOrder(true); renderPractice(); };
+
+buildSelects();
+loadVerb();
+</script>
+</body>
+</html>
