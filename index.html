@@ -743,7 +743,8 @@ function skeleton(states) {
   for (let i = 0; i < r.length; i++) {
     const s = states[i];
     if (s === 'assimilate') { pend = true; }
-    else if (s === 'drop' || s === 'contract') { /* not written */ }
+    else if (s === 'drop') { /* not written */ }
+    else if (s === 'contract') { if (out) out += D; /* merges into the letter just written, leaving a dagesh there */ }
     else { out += r[i].ch + (pend ? D : ''); pend = false; }
   }
   return out;
@@ -911,6 +912,7 @@ function renderPractice() {
   $('p-how').textContent = 'Tap each root letter to choose what happens to it. Available choices: ' +
     vStates().map(s => STATES[s].cap).join('; ') + '.';
   $('score').textContent = 'Practice score ' + S.right + ' / ' + S.tried;
+  $('p-next').disabled = S.pi === F().length - 1;
   S.pst = V().root.map(() => 'keep'); S.pdone = false; S.pfirst = true;
   $('p-fb').innerHTML = '';
   drawPractice();
