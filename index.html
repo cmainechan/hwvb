@@ -242,9 +242,10 @@
 
 const D = 'ּ';   /* dagesh */
 const PH = '◌';  /* dotted circle placeholder, shown before an ending that is only a vowel mark */
+const RLI = '⁧', PDI = '⁩';  /* bidi isolates: keep the placeholder+mark reading right-to-left even mid-sentence, since the circle itself is bidi-neutral */
 const strip = s => (s || '').replace(/[֑-ׇ]/g, '');
 const startsWithMark = s => !!s && /[֑-ׇ]/.test(s[0]);
-const disp = s => !s ? '—' : (startsWithMark(s) ? PH + s : s);
+const disp = s => !s ? '—' : RLI + (startsWithMark(s) ? PH + s : s) + PDI;
 
 const CODE = { k: 'keep', a: 'assimilate', d: 'drop', v: 'vowel', q: 'quiesce', c: 'contract', g: 'guttural' };
 const STATES = {
@@ -321,7 +322,7 @@ const TYPES = {
     grp: 'First letter weak (פ״)',
     short: 'Pe-yod / pe-vav (י״פ)',
     name: 'Pe-yod / pe-vav (י״פ): first root letter is י',
-    summary: 'The first root letter (originally a ו) is a normal consonant in the perfect. After the imperfect prefix, and at the start of the imperative and infinitive, it disappears. The imperfect prefix takes a different vowel.',
+    summary: 'This covers verbs whose first root letter was originally a ו (like יָשַׁב, below): a normal consonant in the perfect, but after the imperfect prefix, and at the start of the imperative and infinitive, it disappears, and the imperfect prefix takes a different vowel. A smaller group of true pe-yod verbs (e.g. יָנַק "suck, nurse", shown below) has a genuine, original י instead: after the prefix it does not drop but fuses into a long vowel, and the theme vowel shifts away from the strong verb’s ō.',
     states: ['keep', 'drop'],
     reasons: {
       full: ['The י carries its own vowel (qamets) at the start of the word, so it is a normal pronounced consonant.',
@@ -329,7 +330,11 @@ const TYPES = {
       imp:  ['After the imperfect prefix, the first root letter is too weak to be pronounced as a consonant.',
              'It falls away, and the prefix vowel lengthens to tsere (יֵ-) in place of the hiriq (יִ-) of the strong verb.'],
       init: ['The imperative and the infinitive construct have no prefix, so the weak first letter would stand at the start of the word.',
-             'It drops, and the second root letter opens the word.']
+             'It drops, and the second root letter opens the word.'],
+      true_imp: ['This is a genuine, original י (not derived from an old ו, unlike יָשַׁב above), so after the prefix it does not drop. Instead it fuses with the prefix’s own vowel, written as part of a long mater, and the theme vowel is a-class rather than the strong verb’s ō.',
+                 'The י stays written as part of a long î (יִי-), and the theme vowel is qamets rather than holem: יִינָק. Contrast יֵשֵׁב, where the corresponding letter disappears completely.'],
+      true_reg: ['The imperative and infinitive construct have no prefix for the י to fuse with, so (just like a normal strong verb) it simply carries its own vowel.',
+                 'The י stays exactly as a strong verb’s first letter would: יְנֹק.']
     },
     verbs: {
       yashav: {
@@ -346,6 +351,21 @@ const TYPES = {
           ['impvms',  'init', '',    'שֵׁב',   '',     'dkk'],
           ['infc',    'init', '',    'שֶׁבֶ',  'ת',    'dkk', 'The final ת is a separate ending that this kind of infinitive takes.']
         ]
+      },
+      yanaq: {
+        name: 'יָנַק: suck, nurse (a true pe-yod verb — contrast with יָשַׁב)',
+        root: [{ ch: 'י', name: 'yod' }, { ch: 'נ', name: 'nun' }, { ch: 'ק', name: 'qof' }],
+        weak: [0],
+        rows: [
+          ['perf3ms', 'full',     '',    'יָנַק',  '',     'kkk'],
+          ['perf3fs', 'full',     '',    'יָנְק',  'ָה',   'kkk'],
+          ['perf1cs', 'full',     '',    'יָנַקְ', 'תִּי', 'kkk'],
+          ['imp3ms',  'true_imp', 'יִ',  'ינָק',   '',     'vkk'],
+          ['imp3mp',  'true_imp', 'יִ',  'ינְק',   'וּ',   'vkk'],
+          ['way3ms',  'true_imp', 'וַיִּ', 'ינָק',  '',     'vkk', 'Built by the regular rule from the imperfect; I could not confirm a direct biblical citation for this exact wayyiqtol form.'],
+          ['impvms',  'true_reg', '',    'יְנֹק',  '',     'kkk', 'The Qal imperative of this root is not directly attested in the Bible; this is the regular form by rule.'],
+          ['infc',    'true_reg', '',    'יְנֹק',  '',     'kkk', 'The Qal infinitive construct of this root is not directly attested in the Bible; this is the regular form by rule.']
+        ]
       }
     }
   },
@@ -354,15 +374,19 @@ const TYPES = {
     grp: 'First letter weak (פ״)',
     short: 'Pe-aleph (א״פ)',
     name: 'Pe-aleph (א״פ): first root letter is א',
-    summary: 'The א is pronounced in the perfect. After the imperfect prefix it stays written but goes silent (it quiesces), and the prefix takes ō. At the start of the imperative and infinitive it is pronounced and takes a composite shewa.',
+    summary: 'The א is pronounced in the perfect. In only four common verbs — אָמַר (say), אָכַל (eat), אָבָה (be willing), אָפָה (bake) — the imperfect prefix quiesces the א and takes ō instead, as shown below with אָמַר. Every other pe-aleph verb instead patterns like a pe-guttural verb (shown below with אָסַף): the א stays a consonant and takes a composite shewa, with an e/a-class vowel rather than ō. Even within that group the prefix vowel is not always the same — אָסַף takes segol, where a verb like עָמַד (above) takes patach. At the start of the imperative and infinitive the א is pronounced and takes a composite shewa.',
     states: ['keep', 'quiesce', 'drop'],
     reasons: {
       full: ['The א begins the word with its own vowel (qamets), so it is pronounced as a consonant (a glottal stop).',
              'Nothing changes. The perfect is regular.'],
-      imp:  ['After the prefix, the א has no vowel of its own, so it is no longer pronounced.',
-             'The א is still written but silent (it quiesces), and the prefix takes ō (יֹ-) in place of the hiriq of the strong verb.'],
+      imp:  ['After the prefix, the א has no vowel of its own. This verb belongs to a small group (אמר, אכל, אבה, אפה) where it is too weak to be pronounced at all here.',
+             'The א is still written but silent (it quiesces), and the prefix takes ō (יֹ-) in place of the hiriq of the strong verb. Most pe-aleph verbs are not in this group — they keep the א as a consonant and pattern like pe-guttural verbs instead (e.g. אֶאֱסֹף "I will gather", not a quiesced ō-form).'],
       init: ['The א begins the word and is pronounced.',
-             'It stays, and because it is a guttural it takes a composite shewa (אֱ) rather than a plain shewa.']
+             'It stays, and because it is a guttural it takes a composite shewa (אֱ) rather than a plain shewa.'],
+      other_imp: ['This verb is not in the small quiescing group above. After the prefix, the א stays a full consonant and simply takes a composite shewa instead of a plain one — exactly like a pe-guttural verb (compare יַעֲמֹד for עָמַד). The prefix itself takes segol here rather than patach; different gutturals can take different prefix vowels.',
+                  'Expect a composite shewa under the א (אֱ-) and a segol under the prefix (יֶ-): יֶאֱסֹף. The א is pronounced, not silent.'],
+      other_mp:  ['As in the singular, the א stays a full consonant with a composite shewa — it is not pushed to a plain shewa or dropped, even though the letter after it (ס) also takes a shewa here.',
+                  'יֶאֱסְפוּ — the composite shewa under the א survives unchanged into the plural.']
     },
     verbs: {
       amar: {
@@ -378,6 +402,21 @@ const TYPES = {
           ['way3ms',  'imp',  'וַיֹּ', 'אמֶר',   '',     'qkk', 'This is the very common narrative form "and he said".'],
           ['impvms',  'init', '',    'אֱמֹר',  '',     'kkk'],
           ['infc',    'init', '',    'אֱמֹר',  '',     'kkk', 'With the preposition ל this becomes לֵאמֹר ("saying"), where the א is silent.']
+        ]
+      },
+      asaf: {
+        name: 'אָסַף: gather (the regular pe-aleph pattern — contrast with אָמַר)',
+        root: [{ ch: 'א', name: 'aleph' }, { ch: 'ס', name: 'samekh' }, { ch: 'ף', name: 'final peh' }],
+        weak: [0],
+        rows: [
+          ['perf3ms', 'full',     '',    'אָסַף',  '',     'kkk'],
+          ['perf3fs', 'full',     '',    'אָסְפ',  'ָה',   'kkk'],
+          ['perf1cs', 'full',     '',    'אָסַפְ', 'תִּי', 'kkk'],
+          ['imp3ms',  'other_imp', 'יֶ', 'אֱסֹף',  '',     'gkk'],
+          ['imp3mp',  'other_mp',  'יֶ', 'אֱסְפ',  'וּ',   'gkk'],
+          ['way3ms',  'other_imp', 'וַיֶּ', 'אֱסֹף', '',     'gkk', 'Compare the quiescing group’s own wayyiqtol, e.g. וַיֹּאמֶר for אָמַר — here the א stays pronounced instead.'],
+          ['impvms',  'init',      '',   'אֱסֹף',  '',     'gkk'],
+          ['infc',    'init',      '',   'אֱסֹף',  '',     'gkk']
         ]
       }
     }
@@ -435,7 +474,7 @@ const TYPES = {
     grp: 'Middle letter weak (ע״)',
     short: 'Geminate: ayin-ayin (ע״ע)',
     name: 'Geminate verbs: ayin-ayin (ע״ע): second and third root letters are identical',
-    summary: 'Where no full vowel separates the two identical letters, they run together and are written as one, so the stem looks like a two-letter root. That letter is doubled where a vowel follows it. The imperfect prefix takes qamets.',
+    summary: 'Where no full vowel separates the two identical letters, they run together and are written as one, so the stem looks like a two-letter root. That letter is doubled where a vowel follows it. The imperfect prefix takes qamets. Many of these forms also occur uncontracted, with both identical letters written separately (e.g. סָבְבָה beside סַבָּה) — Psalm 118:11 famously has both side by side: סַבּוּנִי and סְבָבוּנִי, "they surrounded me".',
     states: ['keep', 'contract'],
     reasons: {
       full:     ['In the 3 m.s. perfect, a vowel separates the two identical letters, so both are pronounced.',
@@ -450,8 +489,8 @@ const TYPES = {
         weak: [1, 2],
         rows: [
           ['perf3ms', 'full',     '',    'סָבַב', '',      'kkk'],
-          ['perf3fs', 'contract', '',    'סַבּ',  'ָה',    'kkc'],
-          ['perf1cs', 'contract', '',    'סַבּ',  'וֹתִי', 'kkc', 'A connecting vowel וֹ (ō) appears before the consonant ending.'],
+          ['perf3fs', 'contract', '',    'סַבּ',  'ָה',    'kkc', 'Also occurs uncontracted, as סָבְבָה, with both letters written separately.'],
+          ['perf1cs', 'contract', '',    'סַבּ',  'וֹתִי', 'kkc', 'A connecting vowel וֹ (ō) appears before the consonant ending. Also occurs uncontracted, as סָבַבְתִּי, with no connecting vowel.'],
           ['imp3ms',  'contract', 'יָ',  'סֹב',   '',      'kkc'],
           ['imp3mp',  'contract', 'יָ',  'סֹבּ',  'וּ',    'kkc'],
           ['way3ms',  'contract', 'וַיָּ', 'סָב',   '',      'kkc'],
@@ -536,7 +575,7 @@ const TYPES = {
     grp: 'Guttural verbs',
     short: 'Guttural verbs (א ה ח ע)',
     name: 'Guttural verbs: a root letter is א, ה, ח or ע',
-    summary: 'Nothing drops out here; the vowels change. Gutturals (א ה ח ע, and ר in some ways) cannot take a dagesh or a plain shewa and prefer a-class vowels. The weak letter can be the first, second or third root letter, and the effect shows only in certain forms.',
+    summary: 'Nothing drops out here; the vowels change. Gutturals (א ה ח ע, and ר in some ways) cannot take a dagesh or a plain shewa and prefer a-class vowels. The weak letter can be the first, second or third root letter, and the effect shows only in certain forms. One verb below (עָלָה) is also lamed-he, to show how two weaknesses combine on the same root — some of its forms show only the guttural effect, others show both at once.',
     states: ['keep', 'guttural'],
     reasons: {
       none: ['In this form the guttural does not change the vowels.',
@@ -546,7 +585,23 @@ const TYPES = {
       p2:   ['The middle root letter is a guttural, which prefers a-class vowels and composite shewa.',
              'Expect a patach where the strong verb has ō, and a composite shewa where the strong verb has a plain shewa.'],
       p3:   ['The final root letter is a guttural, which wants an a-class vowel before it.',
-             'Expect a patach where the strong verb has ō, and a furtive patach in the infinitive construct.']
+             'Expect a patach where the strong verb has ō, and a furtive patach in the infinitive construct.'],
+      pg_mater: ['The guttural ע already carries a full vowel here, so (as with the other guttural verbs) it is unaffected. The final ה is not a real consonant — as with a plain lamed-he verb, it is just a vowel letter marking the final vowel.',
+                 'The guttural stays regular; nothing changes for it. The ה stays written but is not pronounced as a consonant.'],
+      pg_f3:    ['The guttural ע already carries a full vowel here, so it is unaffected. But the 3 f.s. ending attaches straight onto the shortened stem, so there is no room for the final ה — exactly as with a plain lamed-he verb.',
+                 'The guttural stays regular; the ה drops and the ending shows up as תָה (the old feminine ת is visible).'],
+      pg_conn:  ['The guttural ע is unaffected here too, since it already carries a full vowel. Before this consonant-starting ending, the final ה gives way, just as it does for a plain lamed-he verb.',
+                 'The guttural stays regular; the ה drops, and a connecting ִי sits between the stem and the ending.'],
+      pg_imp:   ['Two weaknesses act together here. The first root letter is a guttural, so (as with the other guttural verbs) the prefix takes patach and the guttural takes a composite shewa. The final root letter is the lamed-he mater, so the ending also shows the usual lamed-he tsere-and-ה pattern.',
+                 'Expect a patach under the prefix (יַ-) and a composite shewa under the guttural (עֲ-), plus the lamed-he’s own segol-and-ה ending on top: יַעֲלֶה.'],
+      pg_mp:    ['The guttural still takes a composite shewa rather than a plain one. Unlike the other guttural verb above, it is not pushed to a full vowel here, because the letter after it (ל) takes the ending’s vowel directly rather than its own shewa. The final ה drops before this vowel ending, as with a plain lamed-he verb.',
+                 'The composite shewa survives: יַעֲלוּ. The ה simply drops, with nothing left in its place.'],
+      pg_way:   ['The wayyiqtol is short (apocopated), like a plain lamed-he verb’s: the final ה drops completely, leaving one closed syllable after the prefix. But because that syllable’s letter is the guttural ע, its vowel is patach rather than the segol a non-guttural lamed-he verb would have.',
+                 'The ה drops, and the guttural keeps its preferred a-class vowel: וַיַּעַל (not the segol of a form like וַיִּבֶן).'],
+      pg_impv:  ['Both weaknesses show up together, as in the imperfect: the guttural takes a composite shewa, and the final ה keeps its usual lamed-he tsere-and-ה pattern.',
+                 'עֲלֵה — composite shewa under the guttural, tsere and the mater ה at the end, mirroring the imperfect stem.'],
+      pg_inf:   ['The guttural takes its usual composite shewa, just as in the imperfect and imperative. The final ה is replaced by the lamed-he infinitive’s own וֹת ending.',
+                 'עֲלוֹת — composite shewa under the guttural, ה replaced by וֹת.']
     },
     verbs: {
       amad: {
@@ -558,7 +613,7 @@ const TYPES = {
           ['perf3fs', 'none', '',    'עָמְד',  'ָה',   'kkk'],
           ['perf1cs', 'none', '',    'עָמַדְ', 'תִּי', 'kkk'],
           ['imp3ms',  'p1',   'יַ',  'עֲמֹד',  '',     'gkk'],
-          ['imp3mp',  'p1',   'יַ',  'עַמְד',  'וּ',   'gkk'],
+          ['imp3mp',  'p1',   'יַ',  'עַמְד',  'וּ',   'gkk', 'Here the composite shewa resolves to a full patach instead, because Hebrew avoids two shewa-bearing syllables in a row. Contrast יַעֲמֹד (3 m.s.), which keeps the composite shewa.'],
           ['way3ms',  'p1',   'וַיַּ', 'עֲמֹד',  '',     'gkk'],
           ['impvms',  'p1',   '',    'עֲמֹד',  '',     'gkk'],
           ['infc',    'p1',   '',    'עֲמֹד',  '',     'gkk']
@@ -592,6 +647,21 @@ const TYPES = {
           ['way3ms',  'p3',   'וַיִּ', 'שְׁלַח',  '',     'kkg'],
           ['impvms',  'p3',   '',    'שְׁלַח',  '',     'kkg'],
           ['infc',    'p3',   '',    'שְׁלֹחַ', '',     'kkg']
+        ]
+      },
+      alah: {
+        name: 'עָלָה: go up (doubly weak — first letter guttural, third letter ה)',
+        root: [{ ch: 'ע', name: 'ayin' }, { ch: 'ל', name: 'lamed' }, { ch: 'ה', name: 'he' }],
+        weak: [0, 2],
+        rows: [
+          ['perf3ms', 'pg_mater', '',    'עָלָה', '',      'kkv'],
+          ['perf3fs', 'pg_f3',    '',    'עָלְ',  'תָה',   'kkd'],
+          ['perf1cs', 'pg_conn',  '',    'עָל',   'ִיתִי', 'kkd'],
+          ['imp3ms',  'pg_imp',   'יַ',  'עֲלֶה', '',      'gkv'],
+          ['imp3mp',  'pg_mp',    'יַ',  'עֲל',   'וּ',    'gkd'],
+          ['way3ms',  'pg_way',   'וַיַּ', 'עַל',   '',      'gkd', 'Compare the plain lamed-he short form וַיִּבֶן (segol): here the guttural pulls the vowel to patach instead.'],
+          ['impvms',  'pg_impv',  '',    'עֲלֵה', '',      'gkv'],
+          ['infc',    'pg_inf',   '',    'עֲל',   'וֹת',   'gkd']
         ]
       }
     }
@@ -813,6 +883,16 @@ function buildFormSelect() {
 }
 
 /* ---------- PRACTISE ---------- */
+// The letter-state choices offered while practising. Usually just the
+// current type's own states, but a verb that combines two weaknesses
+// (e.g. a guttural verb that is also lamed-he) needs extra choices its
+// type doesn't normally offer, so any state actually used by this verb's
+// forms but missing from the type's list is appended too.
+function vStates() {
+  const extra = new Set();
+  V().forms.forEach(f => f.st.forEach(s => { if (!T().states.includes(s)) extra.add(s); }));
+  return T().states.concat(Object.keys(STATES).filter(s => extra.has(s)));
+}
 function pForm() { return F()[S.order[S.pi]]; }
 function setOrder(shuffle) {
   const a = F().map((_, i) => i);
@@ -829,7 +909,7 @@ function renderPractice() {
   if (f.suf) bits.push('the ending ' + disp(f.suf));
   $('p-sub').textContent = bits.length ? 'This form takes ' + bits.join(' and ') + '.' : 'This form takes no prefix and no ending.';
   $('p-how').textContent = 'Tap each root letter to choose what happens to it. Available choices: ' +
-    T().states.map(s => STATES[s].cap).join('; ') + '.';
+    vStates().map(s => STATES[s].cap).join('; ') + '.';
   $('score').textContent = 'Practice score ' + S.right + ' / ' + S.tried;
   S.pst = V().root.map(() => 'keep'); S.pdone = false; S.pfirst = true;
   $('p-fb').innerHTML = '';
@@ -846,7 +926,7 @@ function drawPractice(marks) {
     const t = mkTile(r.ch, cls, 'button');
     t.type = 'button';
     t.addEventListener('click', () => {
-      const opts = T().states;
+      const opts = vStates();
       S.pst[i] = opts[(opts.indexOf(S.pst[i]) + 1) % opts.length];
       S.pdone = false; $('p-fb').innerHTML = '';
       drawPractice();
